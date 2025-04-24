@@ -3,11 +3,11 @@ pipeline {
     stages {
         stage('Master Branch Deploy Code') {
             when {
-                branch 'master'
+                branch 'main'
             }
             steps {
                 sh """
-                echo "Building Artifact from Master branch"
+                echo "Building Artifact from Main branch"
                 """
 
                 sh """
