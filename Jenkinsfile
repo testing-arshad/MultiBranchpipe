@@ -4,14 +4,14 @@ pipeline {
        stage('Build Code') {
            steps {
                sh """
-               echo "Building Artifact from Develop Branch"
+               echo "Building Artifact from feature Branch"
                """
            }
        }
       stage('Deploy Code') {
           steps {
                sh """
-               echo "Deploying Code from Develop Branch"
+               echo "Deploying Code from feature Branch"
                """
           }
       }
