@@ -15,5 +15,11 @@ pipeline {
                """
           }
       }
+      stage('Hello') {
+          steps {
+                sh 'ls -al'
+            }
+        }
+
    }
 }
