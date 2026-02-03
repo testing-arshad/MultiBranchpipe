@@ -1,6 +1,13 @@
 pipeline {
     agent any
     stages {
+        stage('Hello Stage') {
+            steps {
+                sh """
+                echo "Hello! This pipeline is running for branch: ${env.BRANCH_NAME}"
+                """
+            }
+        }
         stage('Master Branch Deploy Code') {
             when {
                 branch 'main'

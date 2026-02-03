@@ -1,0 +1,82 @@
+name: Deploy Backend via Docker Compose
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        default: develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # --------------------------
+      # Select AWS Account based on branch
+      # --------------------------
+      - name: Set environment variables based on branch
+        id: aws-setup
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_UAT }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_UAT }}" >> $GITHUB_ENV
+            echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_UAT }}" >> $GITHUB_ENV
+            echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_UAT }}" >> $GITHUB_ENV
+          else
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_UAT }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_UAT }}" >> $GITHUB_ENV
+            echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_UAT }}" >> $GITHUB_ENV
+            echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_UAT }}" >> $GITHUB_ENV
+          fi
+
+      # --------------------------
+      # Configure AWS Credentials
+      # --------------------------
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # --------------------------
+      # Login to ECR
+      # --------------------------
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # --------------------------
+      # Build & Push Docker Image
+      # --------------------------
+      - name: Build and push image to ECR
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::8}
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+          docker tag $ECR_REPO:$IMAGE_TAG $ECR_REPO:latest
+          docker push $ECR_REPO:$IMAGE_TAG
+          docker push $ECR_REPO:latest
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      # --------------------------
+      # Prepare CodeDeploy artifact
+      # --------------------------
+      - name: Create deployment ZIP
+        run: |
+          sed -i "s|IMAGE_PLACEHOLDER|$ECR_REPO:latest|" docker-compose.yml
+          zip -r deploy.zip appspec.yml docker-compose.yml scripts/
+
+      # --------------------------
+      # Upload artifact to S3
+      # --------------------------
+      - name: Upload artifact to S3
+        run: |
+          aws s3 cp deploy.zip s3://$S3_BUCKET/deploy-${GITHUB_SHA::8}.zip
+
+
