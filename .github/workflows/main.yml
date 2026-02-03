@@ -31,6 +31,26 @@ jobs:
             echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_UAT }}" >> $GITHUB_ENV
           fi
 
+      - name: Debug AWS env vars (safe)
+        run: |
+          if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+            echo "❌ AWS_ACCESS_KEY_ID is NOT set"
+          else
+            echo "✅ AWS_ACCESS_KEY_ID is set"
+          fi
+
+          if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "❌ AWS_SECRET_ACCESS_KEY is NOT set"
+          else
+          echo "✅ AWS_SECRET_ACCESS_KEY is set"
+          fi
+
+          if [ -z "$ECR_REPO" ]; then
+            echo "❌ ECR_REPO is NOT set"
+          else
+            echo "✅ ECR_REPO is set: $ECR_REPO"
+          fi
+
       # --------------------------
       # Configure AWS Credentials
       # --------------------------
