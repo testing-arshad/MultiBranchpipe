@@ -19,16 +19,16 @@ jobs:
       - name: Set environment variables based on branch
         id: aws-setup
         run: |
-          if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
+          if [[ "${GITHUB_REF##*/}" == "develop" ]]; then
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_UAT }}" >> $GITHUB_ENV
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_UAT }}" >> $GITHUB_ENV
             echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_UAT }}" >> $GITHUB_ENV
             echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_UAT }}" >> $GITHUB_ENV
           else
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_UAT }}" >> $GITHUB_ENV
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_UAT }}" >> $GITHUB_ENV
-            echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_UAT }}" >> $GITHUB_ENV
-            echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_UAT }}" >> $GITHUB_ENV
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_PROD }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}" >> $GITHUB_ENV
+            echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_PROD }}" >> $GITHUB_ENV
+            echo "S3_BUCKET=${{ secrets.S3_BUCKET_ARTIFACTS_PROD }}" >> $GITHUB_ENV
           fi
 
       - name: Debug AWS env vars (safe)
