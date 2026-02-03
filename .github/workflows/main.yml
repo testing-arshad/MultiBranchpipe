@@ -2,8 +2,6 @@ name: Deploy Backend via Docker Compose
 
 on:
   workflow_dispatch:
-    branches:
-      - develop
 
 jobs:
   deploy:
