@@ -2,6 +2,11 @@ name: Deploy Backend via Docker Compose
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        default: develop
 
 jobs:
   deploy:
@@ -10,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       # --------------------------
       # Select AWS Account based on branch
