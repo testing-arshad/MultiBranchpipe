@@ -24,7 +24,7 @@ jobs:
       - name: Set environment variables based on branch
         id: aws-setup
         run: |
-          if [[ "${GITHUB_REF##*/}" == "develop" ]]; then
+          if [[ "${{ github.event.inputs.branch }}" == "develop" ]]; then
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_PROD }}" >> $GITHUB_ENV
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}" >> $GITHUB_ENV
             echo "ECR_REPO=${{ secrets.ECR_REPOSITORY_PROD }}" >> $GITHUB_ENV
