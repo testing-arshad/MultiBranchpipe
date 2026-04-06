@@ -1,0 +1,19 @@
+name: Auto Assign Reviewers for PROD
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - feature-tryingNoCodereviewers   # Only trigger when PR targets prod
+
+jobs:
+  add_reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Reviewers
+        uses: madrapps/add-pull-request-reviewer@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: |
+            uvesh8787-star
+            arshadgh
