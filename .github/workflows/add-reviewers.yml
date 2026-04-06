@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add Reviewers
-        uses: madrapps/add-pull-request-reviewer@v1
+        uses: peter-evans/review-request@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           reviewers: |
