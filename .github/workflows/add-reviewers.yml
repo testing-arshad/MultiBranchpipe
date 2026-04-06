@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add Reviewers
-        uses: peter-evans/review-request@v2
+        uses: peter-evans/request-reviewers@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           reviewers: |
